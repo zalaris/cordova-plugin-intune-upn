@@ -1,0 +1,30 @@
+{
+  "name": "cordova-plugin-intune-upn",
+  "version": "1.0.0",
+  "description": "Cordova plugin for extracting curent user (UPN) and Azure tenant ID from Intune cache",
+  "main": "index.js",
+  "cordova": {
+    "id": "cordova-plugin-intune-upn",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zalaris/cordova-plugin-intune-upn.git"
+  },
+  "keywords": [
+    "cordova",
+    "ios",
+    "android",
+    "intune",
+    "upn",
+    "tenant"
+  ],
+  "author": "Zalaris ASA",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/zalaris/cordova-plugin-intune-upn/issues"
+  },
+  "homepage": "https://github.com/zalaris/cordova-plugin-intune-upn#readme"
+}

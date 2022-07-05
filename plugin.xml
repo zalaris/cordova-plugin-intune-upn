@@ -21,7 +21,7 @@ limitations under the License.
     <description>Cordova plugin for extracting curent user (UPN) and Azure tenant ID from Intune cache.</description>
     <author>Zalaris ASA</author>
     <keywords>cordova,ios,android,intune,upn,tenant</keywords>
-    <license>Apache 2.0</license>
+    <license>Apache-2.0</license>
     <repo>https://github.com/zalaris/cordova-plugin-intune-upn.git</repo>
     <issues>https://github.com/zalaris/cordova-plugin-intune-upn/issues</issues>
 
