@@ -39,7 +39,7 @@ public class IntuneUPN extends CordovaPlugin {
      * cordova.getActivity().runOnUiThread(runnable);
      *
      * @param action          The action to execute.
-     * @param rawArgs         The exec() arguments in JSON form.
+     * @param args         The exec() arguments in JSON form.
      * @param callbackContext The callback context used when calling back into
      *                        JavaScript.
      * @return Whether the action was valid.
@@ -47,20 +47,21 @@ public class IntuneUPN extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if ("getUPN".equals(action)) {
-            try {
+
                 JSONObject upn = this.getUPN(callbackContext);
                 callbackContext.success(upn);
                 return true;
-            } catch (JSONException e) {
-                Log.e(TAG, "Exception: " + e.getMessage());
-                return false;
-            }
+
+                //Log.e(TAG, "Exception: " + e.getMessage());
+                //return false;
+
+        } else {
+            return false;
         }
-        return false;
     }
 
     private JSONObject getUPN(CallbackContext callbackContext) {
-        JSONObjec result;
+        JSONObject result = new JSONObject();
 
         try {
             Class clsMamComponents = Class.forName("com.microsoft.intune.mam.client.app.MAMComponents");
@@ -103,6 +104,8 @@ public class IntuneUPN extends CordovaPlugin {
             this.returnError(callbackContext, e.getMessage());
         } catch (ClassNotFoundException e) {
             this.returnError(callbackContext, e.getMessage());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         return result;

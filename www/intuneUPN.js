@@ -15,7 +15,7 @@
  */
 
 exports.getUPN = () => {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
         cordova.exec(resolve, reject, "IntuneUPN", "getUPN", []);
     } );
 }
