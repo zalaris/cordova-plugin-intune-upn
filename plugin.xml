@@ -18,7 +18,7 @@ limitations under the License.
     xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-intune-upn" version="1.0.0">
 
     <name>Cordova Plugin Intune UPN</name>
-    <description>Cordova plugin for extracting curent user (UPN) and Azure tenant ID from Intune cache.</description>
+    <description>Cordova plugin for extracting curent user (UPN) and Azure tenant ID from MS Intune cache.</description>
     <author>Zalaris ASA</author>
     <keywords>cordova,ios,android,intune,upn,tenant</keywords>
     <license>Apache-2.0</license>
@@ -26,13 +26,22 @@ limitations under the License.
     <issues>https://github.com/zalaris/cordova-plugin-intune-upn/issues</issues>
 
     <engines>
-        <!--<engine name="cordova-ios" version=">= 6.1.0" />-->
+        <engine name="cordova-ios" version=">= 6.1.0" />
         <engine name="cordova-android" version=">= 9.0.0" />
     </engines>
 
-    <js-module src="www/intuneUPN.js" name="IntuneUPN">
-        <clobbers target="cordova.plugins.intuneUPN" />
+    <js-module src="www/IntuneUPN.js" name="IntuneUPN">
+        <clobbers target="cordova.plugins.IntuneUPN" />
     </js-module>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="IntuneUPN">
+                <param name="ios-package" value="IntuneUPN" />
+            </feature>
+        </config-file>
+        <source-file src="src/ios/IntuneUPN.swift" />
+    </platform>
 
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">

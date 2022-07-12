@@ -47,15 +47,11 @@ public class IntuneUPN extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if ("getUPN".equals(action)) {
-
                 JSONObject upn = this.getUPN(callbackContext);
                 callbackContext.success(upn);
                 return true;
-
-                //Log.e(TAG, "Exception: " + e.getMessage());
-                //return false;
-
         } else {
+            callbackContext.error("Wrong method!");
             return false;
         }
     }
@@ -91,11 +87,6 @@ public class IntuneUPN extends CordovaPlugin {
             String tenantId = methodGetTenantId.invoke(userIdentity).toString();
             result.put("tenantId", tenantId);
 
-            // Get User's Canonical UPN
-            Method methodGetCanonicalUPN = userIdentity.getClass().getMethod("canonicalUPN", null);
-            String canonicalUPN = methodGetCanonicalUPN.invoke(userIdentity).toString();
-            result.put("canonicalUpn", canonicalUPN);
-
         } catch (NoSuchMethodException e) {
             this.returnError(callbackContext, e.getMessage());
         } catch (InvocationTargetException e) {
@@ -105,14 +96,14 @@ public class IntuneUPN extends CordovaPlugin {
         } catch (ClassNotFoundException e) {
             this.returnError(callbackContext, e.getMessage());
         } catch (JSONException e) {
-            e.printStackTrace();
+            this.returnError(callbackContext, e.getMessage());
         }
 
         return result;
     }
 
     private void  returnError(CallbackContext callbackContext, String errorMsg){
-        Log.e(TAG, "Exception: " + errorMsg);
-        callbackContext.error(errorMsg);
+        Log.e(TAG, "Exception: " + errorMsg);        
+        callbackContext.error("Something wrong happend! Most likely the app is not wrapped using Intune Wrapping Tool or does not implement MS Intune SDK and/or MSAL.");
     }
 }
