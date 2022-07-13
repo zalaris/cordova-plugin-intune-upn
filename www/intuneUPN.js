@@ -22,7 +22,7 @@ exports.getUPN = () => {
             } catch {
                 resolve(pluginResult);
             }
-        },
-        resolve, reject, "IntuneUPN", "getUPN", []);
+        }, 
+        reject, "IntuneUPN", "getUPN", []);
     } );
 }
