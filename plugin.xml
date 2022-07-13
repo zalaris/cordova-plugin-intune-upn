@@ -40,15 +40,6 @@ limitations under the License.
                 <param name="ios-package" value="IntuneUPN" />
             </feature>
         </config-file>
-        <source-file src="src/ios/IntuneUPN.swift" />
-    </platform>
-
-    <platform name="android">
-        <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="IntuneUPN">
-                <param name="android-package" value="com.zalaris.cordova.intuneupn.IntuneUPN"/>
-            </feature>
-        </config-file>
 
         <config-file target="*-Info.plist" parent="CFBundleURLTypes">
             <array>
@@ -68,6 +59,16 @@ limitations under the License.
                 <string>microsoft-edge-http-intunemam</string>
                 <string>microsoft-edge-https-intunemam</string>
             </array>
+        </config-file>
+        
+        <source-file src="src/ios/IntuneUPN.swift" />
+    </platform>
+
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="IntuneUPN">
+                <param name="android-package" value="com.zalaris.cordova.intuneupn.IntuneUPN"/>
+            </feature>
         </config-file>
 
         <source-file src="src/android/IntuneUPN.java" target-dir="src/com/zalaris/cordova/intuneupn" />
