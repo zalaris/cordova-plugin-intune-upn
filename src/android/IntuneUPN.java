@@ -64,10 +64,10 @@ public class IntuneUPN extends CordovaPlugin {
             Class clsUserInfo = Class.forName("com.microsoft.intune.mam.policy.MAMUserInfo");
             Class clsMAMIdentityManager = Class.forName("com.microsoft.intune.mam.client.identity.MAMIdentityManager");
 
-            // Reflection: MAMComponents.get
+            // Reflect MAMComponents.get
             Method methodMamGet = clsMamComponents.getMethod("get", new Class[] { Class.class });
 
-            // Reflection: MAMComponents.get(MAMUserInfo.class)
+            // Reflect MAMComponents.get(MAMUserInfo.class)
             Object objUserInfo = methodMamGet.invoke(clsMamComponents, clsUserInfo);
 
             // Get User's UPN
@@ -75,7 +75,7 @@ public class IntuneUPN extends CordovaPlugin {
             String userUPN = methodGetUser.invoke(objUserInfo).toString();
             result.put("upn", userUPN);
 
-            // Reflection: MAMComponents.get(MAMIdentityManager.class)
+            // Reflect MAMComponents.get(MAMIdentityManager.class)
             Object objIdentityManager = methodMamGet.invoke(clsMamComponents, clsMAMIdentityManager);
 
             // Get User Identity instance (contains Azure Tenant ID)
@@ -104,6 +104,6 @@ public class IntuneUPN extends CordovaPlugin {
 
     private void  returnError(CallbackContext callbackContext, String errorMsg){
         Log.e(TAG, "Exception: " + errorMsg);        
-        callbackContext.error("Something wrong happend! Most likely the app is not wrapped using Intune Wrapping Tool or does not implement MS Intune SDK and/or MSAL.");
+        callbackContext.error("Something wrong happend! Most likely the app is not wrapped using MS Intune Wrapping Tool or does not implement MS Intune SDK.");
     }
 }

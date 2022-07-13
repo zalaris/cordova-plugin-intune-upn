@@ -16,38 +16,45 @@
  
 import Foundation
 
+extension String: Error {} // Enables you to throw a string
+
+extension String: LocalizedError { // Adds error.localizedDescription to Error instances
+    public var errorDescription: String? { return self }
+}
+
 @objc(IntuneUPN) class IntuneUPN : CDVPlugin {
+    
     @objc(getUPN:)
     func getUPN(command: CDVInvokedUrlCommand) {
         var pluginResult = CDVPluginResult(
             status: CDVCommandStatus_ERROR,
             messageAs: "Something wrong happend! Most likely the app is not wrapped using Intune Wrapping Tool or does not implement MS Intune SDK and/or MSAL."
         )
-
+        
         struct PluginOutput: Encodable {
             let upn: String
             let tenantId: String
         }
         
-        let MAMDefaultClientId = "6c7e8096-f593-4d72-807f-a5f86dcc9c77"
+        let MAMDefaultClientId: String = "6c7e8096-f593-4d72-807f-a5f86dcc9c77"
         
         do {
             //Get UPN
-            let clsIntuneMAMEnrollmentManager = NSClassFromString("IntuneMAMEnrollmentManager") as! NSObject.Type
+            guard let clsIntuneMAMEnrollmentManager = NSClassFromString("IntuneMAMEnrollmentManager") as? NSObject.Type else { throw "Missing class IntuneMAMEnrollmentManager" }
             let objInstance = clsIntuneMAMEnrollmentManager.perform(NSSelectorFromString("instance")).takeUnretainedValue()
             let objEnrolledAccount = objInstance.perform(NSSelectorFromString("enrolledAccount")).takeUnretainedValue()
             let upn: String = objEnrolledAccount as? String ?? ""
             NSLog(upn)
             
-            //Get Tenant Id
-            let clsMSALPublicClientApp = NSClassFromString("MSALPublicClientApplication") as! NSObject.Type
+            //Get Tenant Id           
+            guard let clsMSALPublicClientApp = NSClassFromString("MSALPublicClientApplication") as? NSObject.Type else { throw "Missing class MSALPublicClientApplication" }
             let objMSALPublicClientApp = clsMSALPublicClientApp.init()
-        
-            let objMSALClientAppInitialized = objMSALPublicClientApp.perform(NSSelectorFromString("initWithClientId:error:"), with: MAMDefaultClientId, with: nil).takeUnretainedValue()
-            let objMSALAccount = objMSALClientAppInitialized.perform(NSSelectorFromString("accountForUsername:error:"), with: upn, with: nil).takeUnretainedValue()
+            let objMSALClientAppInitialized = objMSALPublicClientApp.perform(NSSelectorFromString("initWithClientId:error:"), with: MAMDefaultClientId, with: nil)?.takeUnretainedValue()
             
-            let homeAccountId = objMSALAccount.value(forKey: "homeAccountId")
-            let tenantId: String = (homeAccountId as AnyObject).value(forKey: "tenantId") as? String ?? ""
+            let objMSALAccount = objMSALClientAppInitialized?.perform(NSSelectorFromString("accountForUsername:error:"), with: upn, with: nil)?.takeUnretainedValue()
+            
+            let homeAccountId = objMSALAccount?.value(forKey: "homeAccountId")
+            let tenantId: String = (homeAccountId as? AnyObject)?.value(forKey: "tenantId") as? String ?? ""
             NSLog(tenantId)
             
             //Build plugin output
@@ -56,19 +63,20 @@ import Foundation
 
             let encodePluginOutputData = try jsonEncoder.encode(pluginOutput)
             let encodePluginOutput = String(data: encodePluginOutputData, encoding: .utf8)!
-
+        
             pluginResult = CDVPluginResult(
                 status: CDVCommandStatus_OK,
                 messageAs: encodePluginOutput
             )
-                
+               
             self.commandDelegate!.send(
                 pluginResult,
                 callbackId: command.callbackId
             )
-
+            
         } catch {
             NSLog(error.localizedDescription)
+            
             self.commandDelegate!.send(
                 pluginResult,
                 callbackId: command.callbackId
