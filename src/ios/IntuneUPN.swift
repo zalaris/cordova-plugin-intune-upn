@@ -36,8 +36,10 @@ extension String: LocalizedError { // Adds error.localizedDescription to Error i
             let tenantId: String
         }
 
-        var clientId = self.commandDelegate!.settings["clientid"] as! String
+        //Get Client ID from settings, set default in case of failure
+        var clientId = self.commandDelegate!.settings["clientid"] as? String ?? "6c7e8096-f593-4d72-807f-a5f86dcc9c77"
 
+        //Overwrite Client ID if passed to the plugin explicitly
         if let customClientId = command.argument(at: 0) as? String {
            clientId = customClientId
         }

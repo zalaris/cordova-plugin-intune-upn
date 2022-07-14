@@ -6,24 +6,30 @@ The plugin does not require any dependencies and does not interfere with Intune 
 
 ## Install
 
-Install latest release from npm
+The plugin accepts CLIENT_ID as optional parameter. This allows you to set your own Client Id from Azure. If omitted the default Intune MAM Client ID is used instead.
 
-     cordova plugin add cordova-plugin-intune-upn
+Install latest release from CLI
+
+     cordova plugin add cordova-plugin-intune-upn [--variable CLIENT_ID=myAzureClientId]
      
-Or install from github main
+Or using config.xml
 
-    cordova plugin add https://github.com/zalaris/cordova-plugin-intune-upn.git
+    <plugin name="cordova-plugin-intune-upn" source="npm">
+        <variable name="CLIENT_ID" value="myAzureClientId" />
+    </plugin>
      
 ## Uninstall
 
     cordova plugin rm cordova-plugin-intune-upn
 
 ## Usage
-
+The plugin also accepts the client id as optional parameter during runtime. If supplied it will overwrite the one defined in config.xml.
 The plugin returns a promise that when resolved returns an object with upn and tenantId properties. The promise returns error message when rejected.
 
 ```
-cordova.plugins.IntuneUPN.getUPN()
+let clientId = 'myAzureClientId'; //optional
+
+cordova.plugins.IntuneUPN.getUPN(clientId)
     .then((intuneUser) => {
         console.log('UPN:', intuneUser.upn);
         console.log('Tenant ID:', intuneUser.tenantId);
@@ -32,7 +38,3 @@ cordova.plugins.IntuneUPN.getUPN()
         console.error(error);
     });
 ````
-
-## Limitations
-### iOS
-The plugin can only fetch data if user is logged in using default Intune MAM client id (e.g. the app is wrapped without specifying client id)
