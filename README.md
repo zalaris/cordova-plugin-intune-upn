@@ -1,6 +1,8 @@
 # cordova-plugin-intune-upn
 
-The plugin helps to fetch UPN (user principal name) and Tenant ID out of MS Intune cache for cordova apps that are wrapped with MS Intune Wrapping Tool or implement MS Intune SDK and MSAL. The plugin does not require any dependencies and does not interfere with Intune Wrapping Tool.
+The plugin helps to fetch UPN (user principal name) and Tenant ID out of MS Intune cache for cordova apps that are wrapped with MS Intune Wrapping Tool or implement MS Intune SDK and MSAL. It might be usefull as login hints for further authentications in the app.
+
+The plugin does not require any dependencies and does not interfere with Intune Wrapping Tool and other libraries.
 
 ## Install
 
@@ -23,11 +25,11 @@ The plugin returns a promise that when resolved returns an object with upn and t
 ```
 cordova.plugins.IntuneUPN.getUPN()
     .then((intuneUser) => {
-        console.log('User UPN:', intuneUser.upn);
-        console.log('User Tenant ID:', intuneUser.tenantId);
+        console.log('UPN:', intuneUser.upn);
+        console.log('Tenant ID:', intuneUser.tenantId);
     })
     .catch((error) => {
-        concole.error(error);
+        console.error(error);
     });
 ````
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-exports.getUPN = () => {
+exports.getUPN = (clientId) => {
     return new Promise((resolve, reject) => {
         cordova.exec((pluginResult) => {
             try {
@@ -23,6 +23,6 @@ exports.getUPN = () => {
                 resolve(pluginResult);
             }
         }, 
-        reject, "IntuneUPN", "getUPN", []);
+        reject, "IntuneUPN", "getUPN", [clientId]);
     });
 }

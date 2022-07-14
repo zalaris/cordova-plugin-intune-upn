@@ -24,6 +24,7 @@ import org.json.JSONException;
 import android.util.Log;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 public class IntuneUPN extends CordovaPlugin {
     private final String TAG = "IntuneUPNPlugin";
@@ -45,18 +46,26 @@ public class IntuneUPN extends CordovaPlugin {
      * @return Whether the action was valid.
      */
     @Override
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
         if ("getUPN".equals(action)) {
+            try {
                 JSONObject upn = this.getUPN(callbackContext);
                 callbackContext.success(upn);
                 return true;
+
+            } catch (Exception e){
+                Log.e(TAG, e.getMessage());
+
+                callbackContext.error("Something wrong has happened! Most likely the app is not wrapped using MS Intune Wrapping Tool or does not implement MS Intune SDK.");
+                return false;
+            }
         } else {
             callbackContext.error("Wrong method!");
             return false;
         }
     }
 
-    private JSONObject getUPN(CallbackContext callbackContext) {
+    private JSONObject getUPN(CallbackContext callbackContext) throws Exception {
         JSONObject result = new JSONObject();
 
         try {
@@ -83,27 +92,34 @@ public class IntuneUPN extends CordovaPlugin {
             Object userIdentity = methodFromString.invoke(objIdentityManager, userUPN);
 
             // Get Azure Tenant ID
-            Method methodGetTenantId = userIdentity.getClass().getMethod("tenantId", null);
-            String tenantId = methodGetTenantId.invoke(userIdentity).toString();
-            result.put("tenantId", tenantId);
+            try {
+                Method methodGetTenantId = userIdentity.getClass().getMethod("tenantId", null);
+                String tenantId = methodGetTenantId.invoke(userIdentity).toString();
+                result.put("tenantId", tenantId);
+
+            } catch (NoSuchMethodException e) {
+                Log.i(TAG, "There is no method " + e.getMessage() + ". Switching to reflect the field mTenantAadId.");
+
+                Field fTenantId = userIdentity.getClass().getDeclaredField("mTenantAadId");
+                fTenantId.setAccessible(true);
+                String tenantId = fTenantId.get(userIdentity).toString();
+                result.put("tenantId", tenantId);
+            }
 
         } catch (NoSuchMethodException e) {
-            this.returnError(callbackContext, e.getMessage());
+            throw new Exception("There is no method " + e.getMessage());
         } catch (InvocationTargetException e) {
-            this.returnError(callbackContext, e.getMessage());
+            throw new Exception("Cannot execute method " + e.getMessage());
         } catch (IllegalAccessException e) {
-            this.returnError(callbackContext, e.getMessage());
+            throw new Exception("IllegalAccessException: " + e.getMessage());
         } catch (ClassNotFoundException e) {
-            this.returnError(callbackContext, e.getMessage());
+            throw new Exception("There is no class " + e.getMessage());
         } catch (JSONException e) {
-            this.returnError(callbackContext, e.getMessage());
+            throw new Exception("JSONException: " + e.getMessage());
+        } catch (NoSuchFieldException e) {
+            throw new Exception("There is no field " + e.getMessage());
         }
 
         return result;
-    }
-
-    private void  returnError(CallbackContext callbackContext, String errorMsg){
-        Log.e(TAG, "Exception: " + errorMsg);        
-        callbackContext.error("Something wrong happend! Most likely the app is not wrapped using MS Intune Wrapping Tool or does not implement MS Intune SDK.");
     }
 }

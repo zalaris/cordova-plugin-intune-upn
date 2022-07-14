@@ -34,6 +34,12 @@ limitations under the License.
         <clobbers target="cordova.plugins.IntuneUPN" />
     </js-module>
 
+    <preference name="CLIENT_ID" default="6c7e8096-f593-4d72-807f-a5f86dcc9c77" />
+    
+    <config-file target="config.xml" parent="/*">
+        <preference name="ClientId" value="$CLIENT_ID"/>
+    </config-file>
+
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
             <feature name="IntuneUPN">
@@ -60,7 +66,7 @@ limitations under the License.
                 <string>microsoft-edge-https-intunemam</string>
             </array>
         </config-file>
-        
+
         <source-file src="src/ios/IntuneUPN.swift" />
     </platform>
 
