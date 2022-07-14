@@ -24,5 +24,5 @@ exports.getUPN = () => {
             }
         }, 
         reject, "IntuneUPN", "getUPN", []);
-    } );
+    });
 }
