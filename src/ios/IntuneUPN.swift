@@ -35,8 +35,12 @@ extension String: LocalizedError { // Adds error.localizedDescription to Error i
             let upn: String
             let tenantId: String
         }
-        
-        let MAMDefaultClientId: String = "6c7e8096-f593-4d72-807f-a5f86dcc9c77"
+
+        var clientId = self.commandDelegate!.settings["clientid"] as! String
+
+        if let customClientId = command.argument(at: 0) as? String {
+           clientId = customClientId
+        }
         
         do {
             //Get UPN
@@ -49,7 +53,7 @@ extension String: LocalizedError { // Adds error.localizedDescription to Error i
             //Get Tenant Id           
             guard let clsMSALPublicClientApp = NSClassFromString("MSALPublicClientApplication") as? NSObject.Type else { throw "Missing class MSALPublicClientApplication" }
             let objMSALPublicClientApp = clsMSALPublicClientApp.init()
-            let objMSALClientAppInitialized = objMSALPublicClientApp.perform(NSSelectorFromString("initWithClientId:error:"), with: MAMDefaultClientId, with: nil)?.takeUnretainedValue()
+            let objMSALClientAppInitialized = objMSALPublicClientApp.perform(NSSelectorFromString("initWithClientId:error:"), with: clientId, with: nil)?.takeUnretainedValue()
             
             let objMSALAccount = objMSALClientAppInitialized?.perform(NSSelectorFromString("accountForUsername:error:"), with: upn, with: nil)?.takeUnretainedValue()
             
